@@ -1,11 +1,10 @@
 import * as PIXI from 'pixi.js';
 import { SceneManager } from './SceneManager.js';
-import { TitleScene } from './scenes/TitleScene.js';
 
 const app = new PIXI.Application({
-  width: 800,
-  height: 600,
-  backgroundColor: 0x0a0a1e,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  backgroundColor: 0x1a0a2e,
   antialias: true,
   resolution: window.devicePixelRatio || 1,
   autoDensity: true,
@@ -13,13 +12,18 @@ const app = new PIXI.Application({
 
 document.body.appendChild(app.view);
 
-function resize() {
-  const scale = Math.min(window.innerWidth / 800, window.innerHeight / 600);
-  app.view.style.width = `${800 * scale}px`;
-  app.view.style.height = `${600 * scale}px`;
-}
-window.addEventListener('resize', resize);
-resize();
+window.addEventListener('resize', () => {
+  app.renderer.resize(window.innerWidth, window.innerHeight);
+});
 
 const manager = new SceneManager(app);
-manager.changeScene(new TitleScene(manager));
+
+if (manager.hasSave()) {
+  import('./scenes/LoungeScene.js').then(({ LoungeScene }) => {
+    manager.changeScene(new LoungeScene(manager));
+  });
+} else {
+  import('./scenes/WelcomeScene.js').then(({ WelcomeScene }) => {
+    manager.changeScene(new WelcomeScene(manager));
+  });
+}

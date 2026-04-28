@@ -1,8 +1,12 @@
+import { IdolManager } from './systems/IdolManager.js';
+
 export class SceneManager {
   constructor(app) {
     this.app = app;
     this.currentScene = null;
     this.gameData = {};
+
+    this.idolManager = new IdolManager(this);
 
     this.app.ticker.add((delta) => {
       if (this.currentScene) {

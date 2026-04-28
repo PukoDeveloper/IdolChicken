@@ -84,8 +84,10 @@ export const CHICKENS = {
 };
 
 /**
- * Ordered idol roster used for seat/layout purposes.
- * Reorder or extend this array to change the lineup in scenes.
+ * Complete idol catalogue – all potential members the player can unlock.
+ * This roster is the source of truth for `IdolManager.addIdol()` and for any
+ * future "scouting" or "recruitment" features. Reorder or extend here to
+ * change which idols are available in the game.
  */
 export const IDOL_ROSTER = [
   CHICKENS.xiaohuang,

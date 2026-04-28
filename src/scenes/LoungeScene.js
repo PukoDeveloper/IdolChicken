@@ -1,12 +1,10 @@
 import * as PIXI from 'pixi.js';
 import { BaseScene } from './BaseScene.js';
 import { ChickenSprite } from '../graphics/ChickenSprite.js';
-import { IDOL_ROSTER } from '../data/chickens.js';
 
 // ── Seat layout ───────────────────────────────────────────────────────────────
-// 6 seats: 2 rows of 3. Add more entries here to expand the team in future.
-// colFrac / rowFrac: position as fraction of screen W/H
-// scale: relative size (smaller = farther back, creates perspective feel)
+// Up to 6 seat positions (2 rows of 3).
+// Owned idols are assigned positions in order; unused positions are hidden.
 const SEAT_CONFIGS = [
   // Back row — smaller, positioned near wall/floor boundary
   { colFrac: 0.20, rowFrac: 0.54, scale: 0.72 },
@@ -17,8 +15,6 @@ const SEAT_CONFIGS = [
   { colFrac: 0.50, rowFrac: 0.82, scale: 1.00 },
   { colFrac: 0.80, rowFrac: 0.82, scale: 1.00 },
 ];
-
-const IDOL_NAMES = IDOL_ROSTER.map(c => c.name);
 
 export class LoungeScene extends BaseScene {
   constructor(sceneManager) {
@@ -31,14 +27,19 @@ export class LoungeScene extends BaseScene {
     const W = this.sceneManager.width;
     const H = this.sceneManager.height;
 
+    // Read only the owned idols from the manager.
+    const owned = this.sceneManager.idolManager.ownedIdols;
+    // Limit to available seat positions.
+    const roster = owned.slice(0, SEAT_CONFIGS.length);
+
     this._drawRoom(W, H);
     this._drawDecorations(W, H);
 
     // Layer order: seat backrests → chickens → seat fronts → name tags
-    SEAT_CONFIGS.forEach(cfg => this._drawSeatBack(W, H, cfg));
-    SEAT_CONFIGS.forEach((cfg, i) => this._placeChicken(W, H, cfg, i));
-    SEAT_CONFIGS.forEach(cfg => this._drawSeatFront(W, H, cfg));
-    SEAT_CONFIGS.forEach((cfg, i) => this._drawNameTag(W, H, cfg, IDOL_NAMES[i]));
+    roster.forEach((_, i) => this._drawSeatBack(W, H, SEAT_CONFIGS[i]));
+    roster.forEach(({ chicken }, i) => this._placeChicken(W, H, SEAT_CONFIGS[i], chicken));
+    roster.forEach((_, i) => this._drawSeatFront(W, H, SEAT_CONFIGS[i]));
+    roster.forEach(({ chicken }, i) => this._drawNameTag(W, H, SEAT_CONFIGS[i], chicken.name));
 
     this._drawRoomHeader(W, H);
   }
@@ -172,7 +173,7 @@ export class LoungeScene extends BaseScene {
   }
 
   // ── Chicken placement (between backrest and seat front) ─────────────────────
-  _placeChicken(W, H, cfg, index) {
+  _placeChicken(W, H, cfg, chicken) {
     const x = W * cfg.colFrac;
     const y = H * cfg.rowFrac;
     const s = cfg.scale;
@@ -182,13 +183,13 @@ export class LoungeScene extends BaseScene {
     // Position the chicken so its body sits partway into the seat cushion,
     // while its head and upper body remain visible above the backrest.
     const seatTopY = y - seatH / 2;
-    const chicken = new ChickenSprite(chickenScale, IDOL_ROSTER[index]);
-    chicken.x = x;
-    chicken._baseY = seatTopY - 38 * chickenScale;
-    chicken.y = chicken._baseY;
+    const sprite = new ChickenSprite(chickenScale, chicken);
+    sprite.x = x;
+    sprite._baseY = seatTopY - 38 * chickenScale;
+    sprite.y = sprite._baseY;
 
-    this.container.addChild(chicken);
-    this._chickens.push(chicken);
+    this.container.addChild(sprite);
+    this._chickens.push(sprite);
   }
 
   // ── Seat front (drawn over the chicken's feet) ──────────────────────────────

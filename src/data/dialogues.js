@@ -24,7 +24,7 @@ export const WELCOME_DIALOGUES = [
   },
   {
     speaker: 'director',
-    text:    '我們旗下目前有六位才華洋溢的偶像雞，\n她們現在都在休息室裡。',
+    text:    '目前事務所旗下有一位偶像雞正在休息室等你！\n未來也許還會有更多夥伴加入喔。',
   },
   {
     speaker: 'director',

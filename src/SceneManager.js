@@ -2,7 +2,7 @@ export class SceneManager {
   constructor(app) {
     this.app = app;
     this.currentScene = null;
-    this.gameData = { score: 0, maxCombo: 0, perfect: 0, good: 0, miss: 0 };
+    this.gameData = {};
 
     this.app.ticker.add((delta) => {
       if (this.currentScene) {
@@ -23,6 +23,24 @@ export class SceneManager {
 
   setGameData(data) {
     Object.assign(this.gameData, data);
+  }
+
+  hasSave() {
+    return localStorage.getItem('idolChicken_save') !== null;
+  }
+
+  save(data) {
+    const existing = this.loadSave() || {};
+    localStorage.setItem('idolChicken_save', JSON.stringify({ ...existing, ...data }));
+  }
+
+  loadSave() {
+    try {
+      const s = localStorage.getItem('idolChicken_save');
+      return s ? JSON.parse(s) : null;
+    } catch {
+      return null;
+    }
   }
 
   get width() { return this.app.screen.width; }

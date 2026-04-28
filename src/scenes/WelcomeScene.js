@@ -225,9 +225,9 @@ export class WelcomeScene extends BaseScene {
   _updateDialogue() {
     if (this._step >= DIALOGUES.length) {
       this.sceneManager.save({ initialized: true });
-      import('./LoungeScene.js').then(({ LoungeScene }) => {
-        this.sceneManager.changeScene(new LoungeScene(this.sceneManager));
-      });
+      import('./LoungeScene.js')
+        .then(({ LoungeScene }) => this.sceneManager.changeScene(new LoungeScene(this.sceneManager)))
+        .catch((err) => console.error('Failed to load LoungeScene:', err));
       return;
     }
     const d = DIALOGUES[this._step];

@@ -19,11 +19,11 @@ window.addEventListener('resize', () => {
 const manager = new SceneManager(app);
 
 if (manager.hasSave()) {
-  import('./scenes/LoungeScene.js').then(({ LoungeScene }) => {
-    manager.changeScene(new LoungeScene(manager));
-  });
+  import('./scenes/LoungeScene.js')
+    .then(({ LoungeScene }) => manager.changeScene(new LoungeScene(manager)))
+    .catch((err) => console.error('Failed to load LoungeScene:', err));
 } else {
-  import('./scenes/WelcomeScene.js').then(({ WelcomeScene }) => {
-    manager.changeScene(new WelcomeScene(manager));
-  });
+  import('./scenes/WelcomeScene.js')
+    .then(({ WelcomeScene }) => manager.changeScene(new WelcomeScene(manager)))
+    .catch((err) => console.error('Failed to load WelcomeScene:', err));
 }

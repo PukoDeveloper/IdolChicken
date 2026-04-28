@@ -4,11 +4,22 @@ import * as PIXI from 'pixi.js';
  * Programmatically-drawn chicken idol character.
  * Origin is roughly at the body centre.
  * Call update(delta) each frame to animate.
+ *
+ * @param {number} scale   Uniform scale factor.
+ * @param {object} colors  Per-character color overrides from the chicken repository.
+ *   Accepted keys: bodyColor, wingColor, combColor, beakColor, bowColor.
  */
 export class ChickenSprite extends PIXI.Container {
-  constructor(scale = 1) {
+  constructor(scale = 1, colors = {}) {
     super();
     this._s = scale;
+    this._colors = {
+      body: colors.bodyColor ?? 0xFFDD44,
+      wing: colors.wingColor ?? 0xEECC33,
+      comb: colors.combColor ?? 0xEE2222,
+      beak: colors.beakColor ?? 0xFF8833,
+      bow:  colors.bowColor  ?? 0xFF66AA,
+    };
     this._time = Math.random() * Math.PI * 2;
     this._bobSpeed = 1.5;
     this._bobAmount = 4;
@@ -20,37 +31,38 @@ export class ChickenSprite extends PIXI.Container {
   _build() {
     const g = new PIXI.Graphics();
     const s = this._s;
+    const c = this._colors;
 
     // ── Wings (drawn behind body) ──────────────────────────────
-    g.beginFill(0xEECC33);
+    g.beginFill(c.wing);
     g.drawEllipse(-43 * s, 8 * s, 16 * s, 24 * s);
     g.drawEllipse(43 * s, 8 * s, 16 * s, 24 * s);
     g.endFill();
 
     // ── Body ──────────────────────────────────────────────────
-    g.beginFill(0xFFDD44);
+    g.beginFill(c.body);
     g.drawEllipse(0, 18 * s, 36 * s, 30 * s);
     g.endFill();
 
     // neck connector
-    g.beginFill(0xFFDD44);
+    g.beginFill(c.body);
     g.drawRect(-9 * s, -14 * s, 18 * s, 18 * s);
     g.endFill();
 
     // ── Head ──────────────────────────────────────────────────
-    g.beginFill(0xFFDD44);
+    g.beginFill(c.body);
     g.drawCircle(0, -26 * s, 22 * s);
     g.endFill();
 
     // ── Comb (3 red bumps) ─────────────────────────────────────
-    g.beginFill(0xEE2222);
+    g.beginFill(c.comb);
     g.drawCircle(-9 * s, -46 * s, 7 * s);
     g.drawCircle(0, -51 * s, 8 * s);
     g.drawCircle(9 * s, -46 * s, 7 * s);
     g.endFill();
 
     // ── Beak ──────────────────────────────────────────────────
-    g.beginFill(0xFF8833);
+    g.beginFill(c.beak);
     g.drawPolygon([
       -7 * s, -16 * s,
        7 * s, -16 * s,
@@ -83,11 +95,12 @@ export class ChickenSprite extends PIXI.Container {
     g.endFill();
 
     // ── Idol bow (chest) ──────────────────────────────────────
-    g.beginFill(0xFF66AA);
+    g.beginFill(c.bow);
     g.drawPolygon([-16 * s, -1 * s, -6 * s, 8 * s, -6 * s, -1 * s]);
     g.drawPolygon([ 6 * s, -1 * s,  6 * s, 8 * s, 16 * s, -1 * s]);
     g.endFill();
-    g.beginFill(0xFF44AA);
+    // bow centre knot (slightly darker shade of bow color)
+    g.beginFill(c.bow, 0.75);
     g.drawCircle(0, 4 * s, 4.5 * s);
     g.endFill();
 

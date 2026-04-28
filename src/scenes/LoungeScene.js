@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { BaseScene } from './BaseScene.js';
 import { ChickenSprite } from '../graphics/ChickenSprite.js';
+import { IDOL_ROSTER } from '../data/chickens.js';
 
 // ── Seat layout ───────────────────────────────────────────────────────────────
 // 6 seats: 2 rows of 3. Add more entries here to expand the team in future.
@@ -17,7 +18,7 @@ const SEAT_CONFIGS = [
   { colFrac: 0.80, rowFrac: 0.82, scale: 1.00 },
 ];
 
-const IDOL_NAMES = ['小黃', '小紅', '小藍', '小綠', '小橙', '小紫'];
+const IDOL_NAMES = IDOL_ROSTER.map(c => c.name);
 
 export class LoungeScene extends BaseScene {
   constructor(sceneManager) {
@@ -181,7 +182,7 @@ export class LoungeScene extends BaseScene {
     // Position the chicken so its body sits partway into the seat cushion,
     // while its head and upper body remain visible above the backrest.
     const seatTopY = y - seatH / 2;
-    const chicken = new ChickenSprite(chickenScale);
+    const chicken = new ChickenSprite(chickenScale, IDOL_ROSTER[index]);
     chicken.x = x;
     chicken._baseY = seatTopY - 38 * chickenScale;
     chicken.y = chicken._baseY;

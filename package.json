@@ -1,0 +1,17 @@
+{
+  "name": "idol-chicken",
+  "version": "1.0.0",
+  "description": "IdolChicken – A Rhythm Adventure",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "pixi.js": "^7.4.2"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}
